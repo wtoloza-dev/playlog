@@ -12,6 +12,7 @@ export async function getPlaysUseCase(): Promise<Play[]> {
 		id: data.playId,
 		date: data.date,
 		game: data.game,
+		bggId: data.bggId,
 		players: data.players.map((p) => ({
 			position: p.position,
 			name: p.playerName,

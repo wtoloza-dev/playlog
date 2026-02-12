@@ -7,6 +7,7 @@ interface PlayRow {
 	playId: string;
 	date: string;
 	game: string;
+	bggId?: number;
 	createdBy: string;
 	createdAt: string;
 	position: number;
@@ -21,6 +22,7 @@ export interface PlayData {
 	playId: string;
 	date: string;
 	game: string;
+	bggId?: number;
 	createdBy: string;
 	createdAt: string;
 	players: {
@@ -39,7 +41,7 @@ export async function getPlays(): Promise<PlayData[]> {
 
 	const response = await sheets.spreadsheets.values.get({
 		spreadsheetId: SHEET_ID,
-		range: `${SHEET_NAME}!A:H`,
+		range: `${SHEET_NAME}!A:I`,
 	});
 
 	const rows = response.data.values || [];
@@ -49,11 +51,12 @@ export async function getPlays(): Promise<PlayData[]> {
 		playId: row[0],
 		date: row[1],
 		game: row[2],
-		createdBy: row[3],
-		createdAt: row[4],
-		position: Number(row[5]),
-		playerName: row[6],
-		score: row[7] ? Number(row[7]) : undefined,
+		bggId: row[3] ? Number(row[3]) : undefined,
+		createdBy: row[4],
+		createdAt: row[5],
+		position: Number(row[6]),
+		playerName: row[7],
+		score: row[8] ? Number(row[8]) : undefined,
 	}));
 
 	// Group by playId
@@ -65,6 +68,7 @@ export async function getPlays(): Promise<PlayData[]> {
 				playId: row.playId,
 				date: row.date,
 				game: row.game,
+				bggId: row.bggId,
 				createdBy: row.createdBy,
 				createdAt: row.createdAt,
 				players: [],

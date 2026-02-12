@@ -167,6 +167,7 @@ Single denormalized sheet (`plays`) with one row per player per game:
 | play_id | ULID (unique per game session) |
 | date | Game date (YYYY-MM-DD) |
 | game | Game name |
+| bgg_id | BoardGameGeek game ID (optional, for BGG integration) |
 | created_by | User email |
 | created_at | ISO timestamp |
 | position | Player finish position (1, 2, 3...) |
@@ -174,3 +175,5 @@ Single denormalized sheet (`plays`) with one row per player per game:
 | score | Optional score |
 
 This allows easy analysis in Google Sheets while the app aggregates rows by `play_id` for display.
+
+**Existing sheets:** Insert a new column after `game` (column D), name the header `bgg_id`. Shift existing columns right so the order matches the table above (range A:I).

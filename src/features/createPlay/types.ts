@@ -26,6 +26,8 @@ export interface CreatePlayFormData {
 export interface CreatePlayInput {
 	date: string;
 	game: string;
+	/** BGG game ID (from BoardGameGeek API). Optional for backward compatibility. */
+	bggId?: number;
 	createdBy: string;
 	players: { name: string; score?: number }[];
 }

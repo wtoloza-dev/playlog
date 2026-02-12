@@ -35,11 +35,12 @@ export async function POST(request: Request) {
 		}
 
 		const body = await request.json();
-		const { date, game, players } = body;
+		const { date, game, bggId, players } = body;
 
 		const playId = await createPlayUseCase({
 			date,
 			game,
+			bggId: bggId != null ? Number(bggId) : undefined,
 			createdBy: session.user.email,
 			players,
 		});

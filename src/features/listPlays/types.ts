@@ -18,5 +18,7 @@ export interface Play {
 	id: string;
 	date: string;
 	game: string;
+	/** BGG game ID when the play was linked to BGG. */
+	bggId?: number;
 	players: PlayerResult[];
 }

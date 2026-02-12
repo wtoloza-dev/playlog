@@ -15,6 +15,7 @@ export async function createPlay(data: CreatePlayInput): Promise<string> {
 		playId,
 		data.date,
 		data.game,
+		data.bggId ?? "",
 		data.createdBy,
 		createdAt,
 		index + 1,
@@ -24,7 +25,7 @@ export async function createPlay(data: CreatePlayInput): Promise<string> {
 
 	await sheets.spreadsheets.values.append({
 		spreadsheetId: SHEET_ID,
-		range: `${SHEET_NAME}!A:H`,
+		range: `${SHEET_NAME}!A:I`,
 		valueInputOption: "USER_ENTERED",
 		requestBody: {
 			values: rows,

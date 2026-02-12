@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
-import { API_PLAYS, GAMES } from "@/constants";
+import { API_BGG_GAME, API_BGG_SEARCH, API_PLAYS, GAMES } from "@/constants";
+import type { BggSearchItem } from "./CreatePlayForm";
 import { CreatePlayForm } from "./CreatePlayForm";
 import type { CreatePlayFormData, PlayerEntry } from "./types";
 
@@ -32,6 +33,8 @@ function createPlayerEntry(name = ""): PlayerEntry {
  * Container component for the create play page.
  * Handles all state and business logic.
  */
+const BGG_DEBOUNCE_MS = 400;
+
 export function CreatePlayPage() {
 	const router = useRouter();
 	const [form, setForm] = useState<CreatePlayFormData>({
@@ -41,10 +44,65 @@ export function CreatePlayPage() {
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [bggResults, setBggResults] = useState<BggSearchItem[]>([]);
+	const [bggSearching, setBggSearching] = useState(false);
+	const [selectedBggId, setSelectedBggId] = useState<number | undefined>();
+	const [bggImageUrl, setBggImageUrl] = useState<string | undefined>();
+	const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const handleGameChange = (value: string) => {
+	const handleGameChange = useCallback((value: string) => {
 		setForm((prev) => ({ ...prev, game: value }));
-	};
+		setSelectedBggId(undefined);
+		setBggImageUrl(undefined);
+		if (searchTimeoutRef.current) {
+			clearTimeout(searchTimeoutRef.current);
+		}
+		if (!value.trim()) {
+			setBggResults([]);
+			return;
+		}
+		setBggSearching(true);
+		searchTimeoutRef.current = setTimeout(async () => {
+			try {
+				const res = await fetch(
+					`${API_BGG_SEARCH}?q=${encodeURIComponent(value.trim())}`,
+				);
+				const data = await res.json();
+				setBggResults(Array.isArray(data) ? data : []);
+			} catch {
+				setBggResults([]);
+			} finally {
+				setBggSearching(false);
+			}
+		}, BGG_DEBOUNCE_MS);
+	}, []);
+
+	useEffect(
+		() => () => {
+			if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+		},
+		[],
+	);
+
+	const handleSelectBggGame = useCallback(async (item: BggSearchItem) => {
+		setForm((prev) => ({ ...prev, game: item.name }));
+		setSelectedBggId(item.id);
+		setBggResults([]);
+		try {
+			const res = await fetch(`${API_BGG_GAME}?id=${item.id}`);
+			if (res.ok) {
+				const data = await res.json();
+				setBggImageUrl(data.imageUrl ?? data.thumbnailUrl);
+			}
+		} catch {
+			// keep selectedBggId and name; no cover
+		}
+	}, []);
+
+	const handleClearBggSelection = useCallback(() => {
+		setSelectedBggId(undefined);
+		setBggImageUrl(undefined);
+	}, []);
 
 	const handleDateChange = (value: string) => {
 		setForm((prev) => ({ ...prev, date: value }));
@@ -94,6 +152,7 @@ export function CreatePlayPage() {
 				body: JSON.stringify({
 					date: form.date,
 					game: form.game,
+					bggId: selectedBggId,
 					players: form.players
 						.filter((p) => p.name.trim() !== "")
 						.map((p) => ({ name: p.name, score: p.score })),
@@ -123,11 +182,17 @@ export function CreatePlayPage() {
 			date={form.date}
 			players={form.players}
 			games={GAMES}
+			bggResults={bggResults}
+			bggSearching={bggSearching}
+			selectedBggId={selectedBggId}
+			bggImageUrl={bggImageUrl}
 			isSubmitting={isSubmitting}
 			isValid={isValid}
 			error={error}
 			onGameChange={handleGameChange}
 			onDateChange={handleDateChange}
+			onSelectBggGame={handleSelectBggGame}
+			onClearBggSelection={handleClearBggSelection}
 			onPlayerNameChange={handlePlayerNameChange}
 			onPlayerScoreChange={handlePlayerScoreChange}
 			onAddPlayer={handleAddPlayer}

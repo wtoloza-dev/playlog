@@ -35,7 +35,12 @@ AUTH_GOOGLE_SECRET=your-oauth-client-secret
 GOOGLE_SERVICE_ACCOUNT_EMAIL=your-service-account@project.iam.gserviceaccount.com
 GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 GOOGLE_SHEET_ID=your-google-sheet-id
+
+# BGG (optional): game search and covers. Register at https://boardgamegeek.com/applications
+BGG_API_TOKEN=your-bgg-bearer-token
 ```
+
+**BGG token:** The XML API requires a Bearer token. Register your app at [boardgamegeek.com/applications](https://boardgamegeek.com/applications) (choose non-commercial for PlayLog), wait for approval, then create a Token and set `BGG_API_TOKEN`. Without it, BGG search and covers will not work.
 
 ### Run Locally
 
