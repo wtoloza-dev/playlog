@@ -7,9 +7,11 @@ import { auth } from "@/auth";
  */
 export const proxy = auth((req) => {
 	const isLoggedIn = !!req.auth;
-	const isOnPlays = req.nextUrl.pathname.startsWith("/plays");
+	const isProtected =
+		req.nextUrl.pathname.startsWith("/plays") ||
+		req.nextUrl.pathname.startsWith("/games");
 
-	if (isOnPlays && !isLoggedIn) {
+	if (isProtected && !isLoggedIn) {
 		return NextResponse.redirect(new URL("/login", req.nextUrl));
 	}
 
@@ -17,5 +19,5 @@ export const proxy = auth((req) => {
 });
 
 export const config = {
-	matcher: ["/plays/:path*"],
+	matcher: ["/plays/:path*", "/games/:path*"],
 };

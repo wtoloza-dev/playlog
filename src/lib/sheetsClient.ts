@@ -24,3 +24,10 @@ export function getSheetsClient() {
 
 export const SHEET_ID = process.env.GOOGLE_SHEET_ID;
 export const SHEET_NAME = "plays";
+
+/**
+ * Sheet "games" = My Games collection.
+ * Columns: bgg_id, name, year, image_url, thumbnail_url.
+ * Each row is one game the user has; sync fills name/year/images from BGG.
+ */
+export const GAMES_SHEET = "games";

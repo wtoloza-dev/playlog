@@ -1,6 +1,6 @@
 import { UserInfo } from "@/features/auth";
 
-export default function PlaysLayout({
+export default function GamesLayout({
 	children,
 }: {
 	children: React.ReactNode;
@@ -12,13 +12,13 @@ export default function PlaysLayout({
 					<nav className="flex items-center gap-6">
 						<a
 							href="/plays"
-							className="font-semibold text-zinc-900 dark:text-zinc-50"
+							className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
 						>
 							Plays
 						</a>
 						<a
 							href="/games"
-							className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+							className="font-semibold text-zinc-900 dark:text-zinc-50"
 						>
 							My Games
 						</a>

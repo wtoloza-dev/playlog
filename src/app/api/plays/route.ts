@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { createPlayUseCase } from "@/features/createPlay";
-import { getPlaysUseCase } from "@/features/listPlays";
+import { createPlayUseCase, getPlaysUseCase } from "@/features/plays";
 
 /**
  * GET /api/plays - Get all plays

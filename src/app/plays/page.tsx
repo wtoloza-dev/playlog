@@ -1,4 +1,4 @@
-import { ListPlaysPage } from "@/features/listPlays";
+import { ListPlaysPage } from "@/features/plays";
 
 export default function Page() {
 	return <ListPlaysPage />;
