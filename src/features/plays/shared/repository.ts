@@ -88,6 +88,14 @@ export async function getPlays(): Promise<PlayData[]> {
 	return result;
 }
 
+/**
+ * Get a single play by ID. Returns undefined if not found.
+ */
+export async function getPlayById(playId: string): Promise<PlayData | undefined> {
+	const plays = await getPlays();
+	return plays.find((p) => p.playId === playId);
+}
+
 export async function createPlay(data: CreatePlayInput): Promise<string> {
 	const sheets = getSheetsClient();
 	const playId = ulid();
