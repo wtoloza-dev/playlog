@@ -1,11 +1,10 @@
+/**
+ * Next.js 16 route protection (proxy).
+ * Must live at project root; config cannot be re-exported.
+ */
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
-/**
- * Route protection logic. Next.js 16 runs the proxy from project root only.
- * The file that actually runs is root-level `proxy.ts` (same logic, duplicated so config lives there).
- * Redirects unauthenticated users to /login for /plays and /games.
- */
 export const proxy = auth((req) => {
 	const isLoggedIn = !!req.auth;
 	const isProtected =
